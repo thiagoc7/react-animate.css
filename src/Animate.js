@@ -43,22 +43,21 @@ export default class extends Component {
   }
 
   renderStyle(animationEnter, animationLeave, durationEnter, durationLeave) {
-    const animationEnterObj = animations.find(item => item.name == animationEnter);
-    const animationLeaveObj = animations.find(item => item.name == animationLeave);
 
     return (
         `
         .default-enter {
-          ${animationEnterObj.enterStyle}
+          opacity: 0;
         }
 
         .default-enter.${animationEnter} {
           animation-duration: ${durationEnter / 1000}s;
           animation-fill-mode: both;
+          opacity: 1;
         }
 
         .default-leave {
-          ${animationLeaveObj.leaveStyle}
+          opacity: 1;
         }
 
         .default-leave.${animationLeave} {
