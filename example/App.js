@@ -4,9 +4,10 @@ import Select from './Select'
 import List from './List'
 import Code from './Code'
 
+import 'animate.css/animate.css'
 import style from './styles.css'
 
-export class App extends Component {
+export default class extends Component {
   constructor(props) {
     super(props);
     this.state = {

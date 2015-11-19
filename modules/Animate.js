@@ -1,8 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
-
-import animations from './animations'
-import 'animate.css/animate.css'
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
 export default class extends Component {
 

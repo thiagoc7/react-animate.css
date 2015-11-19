@@ -17,6 +17,8 @@ export default class extends Component {
         `
 import Animate from 'react-animate.css'
 
+import 'animate.css/animate.css'  // you need to require the css somewhere
+
 <Animate
     animationEnter="bounceIn"
     animationLeave="bounceOut"

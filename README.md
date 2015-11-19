@@ -1,71 +1,126 @@
-># Babel 6 Not Supported Yet
+# AsyncProps for React Router
 
->We don’t support Babel 6 yet.  
->If you’d like, you can [contribute to help make it happen](https://github.com/gaearon/babel-plugin-react-transform/issues/46).
+[![npm package](https://img.shields.io/npm/v/async-props.svg?style=flat-square)](https://www.npmjs.org/package/async-props)
+[![#rackt on freenode](https://img.shields.io/badge/irc-rackt_on_freenode-61DAFB.svg?style=flat-square)](https://webchat.freenode.net/)
 
+## Docs & Help
 
-React Transform Boilerplate
-=====================
+- [Changelog](/CHANGES.md)
+- [#react-router @ Reactiflux](https://discord.gg/0ZcbPKXt5bYaNQ46)
+- [Stack Overflow](http://stackoverflow.com/questions/tagged/react-router)
 
-A *new* Webpack boilerplate with:
+For questions and support, please visit [our channel on Reactiflux](https://discord.gg/0ZcbPKXt5bYaNQ46) or [Stack Overflow](http://stackoverflow.com/questions/tagged/react-router). The issue tracker is *exclusively* for bug reports and feature requests.
 
-* hot reloading React components;
-* error handling inside component `render()` function;
-* error handling for syntax errors (thanks, **[@glenjamin](https://github.com/glenjamin)**!)
+## Installation
 
-Built with **[babel-plugin-react-transform](https://github.com/gaearon/babel-plugin-react-transform)** and a few custom transforms.  
-**[Does not](https://medium.com/@dan_abramov/the-death-of-react-hot-loader-765fa791d7c4)** use React Hot Loader.
+Using [npm](https://www.npmjs.com/):
 
-[![react-transform channel on slack](https://img.shields.io/badge/slack-react--transform%40reactiflux-61DAFB.svg?style=flat-square)](http://www.reactiflux.com)
+    $ npm install async-props
 
-## Demo
-
-![](http://i.imgur.com/AhGY28T.gif)
-
-```
-git clone https://github.com/gaearon/react-transform-boilerplate.git
-cd react-transform-boilerplate
-npm install
-npm start
-open http://localhost:3000
-```
-
-Then go ahead and edit files inside `src` (any file except `index.js`).
-
-## What’s Inside
-
-
-The component instrumentation is implemented on top of **[babel-plugin-react-transform](https://github.com/gaearon/babel-plugin-react-transform)**:
-
-* **[react-transform-hmr](https://github.com/gaearon/react-transform-hmr)** handles hot reloading
-* **[react-transform-catch-errors](https://github.com/gaearon/react-transform-catch-errors)** catches component errors
-
-The syntax errors are displayed in an overlay by **[@glenjamin](https://github.com/glenjamin)**’s **[webpack-hot-middleware](https://github.com/glenjamin/webpack-hot-middleware)** which replaces Webpack Dev Server.
-
-## Troubleshooting
-
-### I can’t serve images / use different HTML file / etc
-
-This boilerplate is just a Webpack bundle served by an Express server. It’s not meant to demonstrate every feature of either project. Please consult Webpack and Express docs to learn how to serve images, or bundle them into your JavaScript application.
-
-### I don’t see the syntax error overlay!
-
-Make sure your react-app is not attached to `document.body` as the client overlay provided by [webpack-hot-middleware](https://github.com/glenjamin/webpack-hot-middleware) will render into `document.body`.
-Attaching the React root node to `document.body` requires extra caution, as many third-party packages will append their markup to the body as well. React will replace the entire contents in the body on every re-render. Thus you will not see the additional markup.
-
-It’s always better to render your React app in a `#root` DOM element.
+Then with a module bundler like [webpack](https://webpack.github.io/), use as you would anything else:
 
 ```js
-import React from 'react'
-import { App } from 'app'
-
-React.render(<App />, document.getElementById('root'))
+// using an ES6 transpiler, like babel
+import AsyncProps from 'async-props'
 ```
 
-## Discussion
+The UMD build is also available on [npmcdn](https://npmcdn.com):
 
-You can discuss React Transform and related projects in **#react-transform** channel on [Reactiflux Slack](http://reactiflux.com).
+```html
+<script src="https://npmcdn.com/async-props/umd/AsyncProps.min.js"></script>
+```
 
-## License
+You can find the library on `window.AsyncProps`.
 
-CC0 (public domain)
+## Notes
+
+This is pre-release, but I think the code works as intended, just need
+to brush up the repository and add a few more tests.
+
+## Usage
+
+```js
+import { Router, Route } from 'react-router'
+import AsyncProps from 'async-props'
+import React from 'react'
+import { render } from 'react-dom'
+
+class App extends React.Component {
+
+  // 1. define a `loadProps` static method
+  static loadProps(params, cb) {
+    cb(null, {
+      tacos: [ 'Pollo', 'Carnitas' ]
+    })
+  }
+
+  render() {
+    // 2. access data as props :D
+    const tacos = this.props.tacos
+    return (
+      <div>
+        <ul>
+          {tacos.map(taco => (
+            <li>{taco}</li>
+          ))}
+        </ul>
+      </div>
+    )
+  }
+}
+
+// 3. Render `Router` with custom RoutingContext
+render((
+  <Router RoutingContext={AsyncProps}>
+    <Route path="/" component={App}/>
+  </Router>
+), el)
+```
+
+### Server
+
+```js
+import { renderToString } from 'react-dom/server'
+import { match, RoutingContext } from 'react-router'
+import AsyncProps, { loadPropsOnServer } from 'async-props'
+
+app.get('*', (req, res) => {
+  match({ routes, location: req.url }, (err, redirect, renderProps) => {
+
+    // 1. load the props
+    loadPropsOnServer(renderProps, (err, asyncProps, scriptTag) => {
+
+      // 2. use `AsyncProps` instead of `RoutingContext` and pass it
+      //    `renderProps` and `asyncProps`
+      const appHTML = renderToString(
+        <AsyncProps {...renderProps} {...asyncProps} />
+      )
+
+      // 3. render the script tag into the server markup
+      const html = createPage(appHTML, scriptTag)
+      res.send(html)
+    })
+  })
+})
+
+function createPage(html, scriptTag) {
+  return `
+    <!doctype html>
+    <html>
+      <!-- etc. --->
+      <body>
+        <div id="app">${html}</div>
+
+        <!-- its a string -->
+        ${scriptTag}
+      </body>
+    </html>
+  `
+}
+```
+
+## API
+
+Please refer to the example, as it exercises the entire API. Docs will
+come eventually :)
+

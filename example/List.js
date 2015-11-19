@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import uuid from 'node-uuid';
 
-import Animate from './Animate'
+import Animate from 'react-animate.css'
 
 export default class extends Component {
   constructor(props) {
