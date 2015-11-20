@@ -1,6 +1,6 @@
 {
   "name": "react-animate.css",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "animate.css wraper for ReactCSSTransitionGroup",
   "main": "lib/Animate",
   "repository": {
@@ -60,9 +60,13 @@
     "animate.css": "^3.4.0"
   },
   "tags": [
-    "react"
+    "react",
+    "react-component",
+    "animate.css"
   ],
   "keywords": [
-    "react"
+    "react",
+    "react-component",
+    "animate.css"
   ]
 }
