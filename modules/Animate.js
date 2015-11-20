@@ -1,5 +1,5 @@
-import React, { Component, PropTypes } from 'react';
-import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
+import React, { Component, PropTypes } from 'react'
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
 
 export default class extends Component {
 
@@ -8,16 +8,16 @@ export default class extends Component {
     animationEnter: PropTypes.string.isRequired,
     animationLeave: PropTypes.string.isRequired,
     durationEnter: PropTypes.number.isRequired,
-    durationLeave: PropTypes.number.isRequired,
+    durationLeave: PropTypes.number.isRequired
   };
 
   render() {
-    const { children, animationEnter, animationLeave, durationEnter, durationLeave, ...others} = this.props;
+    const { children, animationEnter, animationLeave, durationEnter, durationLeave, ...others } = this.props
 
     return (
         <div>
 
-          <style dangerouslySetInnerHTML={{__html: this.renderStyle(animationEnter, animationLeave, durationEnter, durationLeave)}} />
+          <style dangerouslySetInnerHTML={ { __html: this.renderStyle(animationEnter, animationLeave, durationEnter, durationLeave) } } />
 
           <ReactCSSTransitionGroup
               component="ul"
@@ -25,7 +25,7 @@ export default class extends Component {
                 enter: 'default-enter',
                 enterActive: animationEnter,
                 leave: 'default-leave',
-                leaveActive: animationLeave,
+                leaveActive: animationLeave
               } }
               transitionEnterTimeout={durationEnter}
               transitionLeaveTimeout={durationLeave}
