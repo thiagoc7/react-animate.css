@@ -4,7 +4,7 @@ import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
 export default class extends Component {
 
   static propTypes = {
-    children: PropTypes.any.isRequired,
+    //children: PropTypes.any.isRequired,
     animationEnter: PropTypes.string.isRequired,
     animationLeave: PropTypes.string.isRequired,
     durationEnter: PropTypes.number.isRequired,
